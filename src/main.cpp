@@ -1,9 +1,14 @@
 #include <Arduino.h>
+#include "LoggerFactory.hpp"
+
+LoggerFactory* _logger = new LoggerFactory();
 
 void setup() {
-  // put your setup code here, to run once:
+  _logger->writeToSerial(LogLevel::Debug);
+  _logger->setup();
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  _logger->logInfo("ping");
+  delay(1000);
 }
