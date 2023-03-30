@@ -8,20 +8,27 @@ private:
     BaseLogger* _loggers[2];
     unsigned char _count = 0;
 
+    static LogLevel toLogLevel(const String& logLevel) {
+        if (logLevel == "Debug")
+            return LogLevel::Debug;
+        
+        if (logLevel == "Info")
+            return LogLevel::Info;
+        
+        if (logLevel == "Warning")
+            return LogLevel::Warning;
+
+        return LogLevel::Error;
+    }
+
 public:
-    void writeToSerial(const LogLevel logLevel, const unsigned long bound = 9600) {
-        _loggers[_count++] = new SerialLogger(logLevel, bound);
+    void writeToSerial(const String& logLevel, const Stream& stream) {
+        _loggers[_count++] = new SerialLogger(toLogLevel(logLevel), stream);
     }
 
     // void writeToSdCard(const LogLevel logLevel) {
     //     //
     // }
-
-    void setup() const {
-        for (int i = 0; i < _count; i++) {
-            _loggers[i]->setup();
-        }
-    }
 
     void logDebug(const String& message) const {
         for (int i = 0; i < _count; i++) {

@@ -6,17 +6,13 @@
 
 class SerialLogger final : public BaseLogger {
 private:
-    const unsigned long _bound;
+    const Stream& _stream;
 
 public:
-    SerialLogger(const LogLevel logLevel, const unsigned long bound = 9600): BaseLogger(logLevel), _bound(bound) {}
-
-    void setup() override {
-        Serial.begin(_bound);
-    }
+    SerialLogger(const LogLevel logLevel, const Stream& stream): BaseLogger(logLevel), _stream(stream) {}
 
 protected:
     void log(const String& message) override {
-        Serial.println(message);
+        _stream.println(message);
     }
 };

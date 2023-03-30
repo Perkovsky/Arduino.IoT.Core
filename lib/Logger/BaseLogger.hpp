@@ -11,7 +11,7 @@ private:
         return String(millis());
     }
 
-    static String toString(const LogLevel logLevel) {
+    static String toString(const LogLevel& logLevel) {
         switch (logLevel) {
             case LogLevel::Debug:
                 return "DBG";
@@ -24,13 +24,13 @@ private:
         }
     }
 
-    static String buildLogMessage(const LogLevel logLevel, const String& message) {
+    static String buildLogMessage(const LogLevel& logLevel, const String& message) {
         const auto timestamp = getTimestamp();
         const auto strLogLevel = toString(logLevel);
         return "[" + timestamp + " " + strLogLevel + "] " + message;
     }
 
-    void log(const LogLevel logLevel, const String& message)
+    void log(const LogLevel& logLevel, const String& message)
     {
         if (logLevel < _logLevel)
             return;
@@ -40,15 +40,13 @@ private:
     }
 
 protected:
-    explicit BaseLogger(LogLevel logLevel) : _logLevel(logLevel) {}
+    explicit BaseLogger(const LogLevel logLevel) : _logLevel(logLevel) {}
 
     virtual ~BaseLogger() = default;
 
     virtual void log(const String& message) = 0;
 
 public:
-    virtual void setup() = 0;
-
     void logDebug(const String& message) {
         log(LogLevel::Debug, message);
     }
