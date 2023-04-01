@@ -5,6 +5,7 @@
 
 class LoggerFactory {
 private:
+    uRTCLib* _rtc;
     BaseLogger* _loggers[2];
     unsigned char _count = 0;
 
@@ -22,8 +23,10 @@ private:
     }
 
 public:
+    LoggerFactory(uRTCLib* rtc = nullptr): _rtc(rtc) {}
+
     void writeToSerial(const String& logLevel, const Stream& stream) {
-        _loggers[_count++] = new SerialLogger(toLogLevel(logLevel), stream);
+        _loggers[_count++] = new SerialLogger(toLogLevel(logLevel), stream, _rtc);
     }
 
     // void writeToSdCard(const LogLevel logLevel) {

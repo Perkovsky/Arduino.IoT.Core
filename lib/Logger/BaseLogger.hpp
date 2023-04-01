@@ -1,13 +1,24 @@
 #pragma once
 
 #include <String.h>
+#include <uRTCLib.h>
 #include "LogLevel.hpp"
 
 class BaseLogger {
 private:
     const LogLevel _logLevel;
+    uRTCLib* _rtc;
 
-    static String getTimestamp() {
+    String getTimestampFromRtc() {
+        char timestamp[20];
+        sprintf(timestamp, "20%02d-%02d-%02d %02d:%02d:%02d", _rtc->year(), _rtc->month(), _rtc->day(), _rtc->hour(), _rtc->minute(), _rtc->second());
+        return String(timestamp);
+    }
+
+    String getTimestamp() {
+        if (_rtc != nullptr)
+            return getTimestampFromRtc();
+
         return String(millis());
     }
 
@@ -24,7 +35,7 @@ private:
         }
     }
 
-    static String buildLogMessage(const LogLevel& logLevel, const String& message) {
+    String buildLogMessage(const LogLevel& logLevel, const String& message) {
         const auto timestamp = getTimestamp();
         const auto strLogLevel = toString(logLevel);
         return "[" + timestamp + " " + strLogLevel + "] " + message;
@@ -40,7 +51,7 @@ private:
     }
 
 protected:
-    explicit BaseLogger(const LogLevel logLevel) : _logLevel(logLevel) {}
+    explicit BaseLogger(const LogLevel logLevel, uRTCLib* rtc = nullptr) : _logLevel(logLevel), _rtc(rtc) {}
 
     virtual ~BaseLogger() = default;
 
