@@ -47,7 +47,10 @@ private:
             return;
 
         const String logMessage = buildLogMessage(logLevel, message);
-        log(logMessage);
+        if  (!log(logMessage))
+        {
+            // _notifier.Send("Cannot log message: '" + message + "'");
+        }
     }
 
 protected:
@@ -55,7 +58,7 @@ protected:
 
     virtual ~BaseLogger() = default;
 
-    virtual void log(const String& message) = 0;
+    virtual bool log(const String& message) = 0;
 
 public:
     void logDebug(const String& message) {

@@ -2,6 +2,7 @@
 
 #include <String.h>
 #include "SerialLogger.hpp"
+#include "SdCardLogger.hpp"
 
 class LoggerFactory {
 private:
@@ -29,9 +30,9 @@ public:
         _loggers[_count++] = new SerialLogger(toLogLevel(logLevel), stream, _rtc);
     }
 
-    // void writeToSdCard(const LogLevel logLevel) {
-    //     //
-    // }
+    void writeToSdCard(const String& logLevel, const SDClass& sd) {
+        _loggers[_count++] = new SdCardLogger(toLogLevel(logLevel), sd, _rtc);
+    }
 
     void logDebug(const String& message) const {
         for (int i = 0; i < _count; i++) {

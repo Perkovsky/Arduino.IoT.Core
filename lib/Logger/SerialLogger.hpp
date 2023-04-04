@@ -13,7 +13,8 @@ public:
         : BaseLogger(logLevel, rtc), _stream(stream) {}
 
 protected:
-    void log(const String& message) override {
+    bool log(const String& message) override {
         _stream.println(message);
+        return true;
     }
 };
