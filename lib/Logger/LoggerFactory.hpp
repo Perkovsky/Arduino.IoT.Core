@@ -30,7 +30,7 @@ public:
         _loggers[_count++] = new SerialLogger(toLogLevel(logLevel), stream, _rtc);
     }
 
-    void writeToSdCard(const String& logLevel, const SDClass& sd) {
+    void writeToSdCard(const String& logLevel, const SdFat& sd) {
         _loggers[_count++] = new SdCardLogger(toLogLevel(logLevel), sd, _rtc);
     }
 

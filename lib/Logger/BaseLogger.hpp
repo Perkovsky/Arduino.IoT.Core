@@ -47,6 +47,7 @@ private:
             return;
 
         const String logMessage = buildLogMessage(logLevel, message);
+        
         if  (!log(logMessage))
         {
             // _notifier.Send("Cannot log message: '" + message + "'");
