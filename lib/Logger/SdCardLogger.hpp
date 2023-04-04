@@ -1,17 +1,16 @@
 #pragma once
 
 #include <String.h>
-#include <Arduino.h>
 #include <SdFat.h>
 #include "BaseLogger.hpp"
 
 class SdCardLogger final : public BaseLogger {
 private:
     const String FIlE_NAME = "log001.txt";
-    const SdFat& _sd;
+    SdFat& _sd;
 
 public:
-    SdCardLogger(const LogLevel logLevel, const SdFat& sd, uRTCLib* rtc = nullptr)
+    SdCardLogger(const LogLevel logLevel, SdFat& sd, uRTCLib* rtc = nullptr)
         : BaseLogger(logLevel, rtc), _sd(sd) {}
 
 protected:

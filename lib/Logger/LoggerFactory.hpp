@@ -26,11 +26,11 @@ private:
 public:
     LoggerFactory(uRTCLib* rtc = nullptr): _rtc(rtc) {}
 
-    void writeToSerial(const String& logLevel, const Stream& stream) {
+    void writeToSerial(const String& logLevel, Stream& stream) {
         _loggers[_count++] = new SerialLogger(toLogLevel(logLevel), stream, _rtc);
     }
 
-    void writeToSdCard(const String& logLevel, const SdFat& sd) {
+    void writeToSdCard(const String& logLevel, SdFat& sd) {
         _loggers[_count++] = new SdCardLogger(toLogLevel(logLevel), sd, _rtc);
     }
 
@@ -55,6 +55,7 @@ public:
     void logError(const String& message) const {
         for (int i = 0; i < _count; i++) {
             _loggers[i]->logError(message);
+            // _notifier.Send(message);
         }
     }
 };
