@@ -1,6 +1,5 @@
 #pragma once
 
-#include <String.h>
 #include <SdFat.h>
 #include "BaseLogger.hpp"
 
@@ -10,8 +9,8 @@ private:
     SdFat& _sd;
 
 public:
-    SdCardLogger(const LogLevel logLevel, SdFat& sd, uRTCLib* rtc = nullptr)
-        : BaseLogger(logLevel, rtc), _sd(sd) {}
+    SdCardLogger(const LogLevel logLevel, SdFat& sd, AbstractDateTimeProvider& dateTimeProvider)
+        : BaseLogger(logLevel, dateTimeProvider), _sd(sd) {}
 
 protected:
     bool log(const String& message) override {

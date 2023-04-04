@@ -3,42 +3,38 @@
 #include <String.h>
 #include <uRTCLib.h>
 #include "LogLevel.hpp"
+#include "AbstractDateTimeProvider.hpp"
 
 class BaseLogger {
 private:
     const LogLevel _logLevel;
-    uRTCLib* _rtc;
-
-    String getTimestampFromRtc() {
-        char timestamp[20];
-        sprintf(timestamp, "20%02d-%02d-%02d %02d:%02d:%02d", _rtc->year(), _rtc->month(), _rtc->day(), _rtc->hour(), _rtc->minute(), _rtc->second());
-        return String(timestamp);
-    }
-
-    String getTimestamp() {
-        if (_rtc != nullptr)
-            return getTimestampFromRtc();
-
-        return String(millis());
-    }
+    AbstractDateTimeProvider& _dateTimeProvider;
 
     static String toString(const LogLevel& logLevel) {
         switch (logLevel) {
             case LogLevel::Debug:
-                return "DBG";
+                return F("DBG");
             case LogLevel::Warning:
-                return "WRN";
+                return F("WRN");
             case LogLevel::Error:
-                return "ERR";
+                return F("ERR");
             default:
-                return "INF";
+                return F("INF");
         }
     }
 
     String buildLogMessage(const LogLevel& logLevel, const String& message) {
-        const auto timestamp = getTimestamp();
+        const auto timestamp = _dateTimeProvider.getTimestamp();
         const auto strLogLevel = toString(logLevel);
-        return "[" + timestamp + " " + strLogLevel + "] " + message;
+        
+        String result("[");
+        result += timestamp;
+        result += " ";
+        result += strLogLevel;
+        result += "] ";
+        result += message;
+
+        return result;
     }
 
     void log(const LogLevel& logLevel, const String& message)
@@ -55,7 +51,8 @@ private:
     }
 
 protected:
-    explicit BaseLogger(const LogLevel logLevel, uRTCLib* rtc = nullptr) : _logLevel(logLevel), _rtc(rtc) {}
+    explicit BaseLogger(const LogLevel logLevel, AbstractDateTimeProvider& dateTimeProvider)
+        : _logLevel(logLevel), _dateTimeProvider(dateTimeProvider) {}
 
     virtual ~BaseLogger() = default;
 

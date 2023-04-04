@@ -1,12 +1,13 @@
 #pragma once
 
 #include <String.h>
+#include "AbstractDateTimeProvider.hpp"
 #include "SerialLogger.hpp"
 #include "SdCardLogger.hpp"
 
 class LoggerFactory {
 private:
-    uRTCLib* _rtc;
+    AbstractDateTimeProvider& _dateTimeProvider;
     BaseLogger* _loggers[2];
     unsigned char _count = 0;
 
@@ -24,14 +25,14 @@ private:
     }
 
 public:
-    LoggerFactory(uRTCLib* rtc = nullptr): _rtc(rtc) {}
+    LoggerFactory(AbstractDateTimeProvider& dateTimeProvider): _dateTimeProvider(dateTimeProvider) {}
 
     void writeToSerial(const String& logLevel, Stream& stream) {
-        _loggers[_count++] = new SerialLogger(toLogLevel(logLevel), stream, _rtc);
+        _loggers[_count++] = new SerialLogger(toLogLevel(logLevel), stream, _dateTimeProvider);
     }
 
     void writeToSdCard(const String& logLevel, SdFat& sd) {
-        _loggers[_count++] = new SdCardLogger(toLogLevel(logLevel), sd, _rtc);
+        _loggers[_count++] = new SdCardLogger(toLogLevel(logLevel), sd, _dateTimeProvider);
     }
 
     void logDebug(const String& message) const {

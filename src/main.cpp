@@ -1,26 +1,30 @@
 #include <Arduino.h>
-#include <uRTCLib.h>
 #include <SdFat.h>
+#include <uRTCLib.h>
+//#include "RtcDateTimeProvider.hpp"
+#include "DefaultDateTimeProvider.hpp"
 #include "LoggerFactory.hpp"
 
-const uint8_t CS_PIN = 4;
-const unsigned long BAUD = 9600;
-
-uRTCLib rtc(0x68);
 SdFat sd;
-LoggerFactory _logger(&rtc);
+uRTCLib rtc(0x68);
+//RtcDateTimeProvider dateTimeProvider(rtc);
+DefaultDateTimeProvider dateTimeProvider;
+LoggerFactory logger(dateTimeProvider);
 
 void setup() {
-  Serial.begin(BAUD);
+  Serial.begin(9600);
   URTCLIB_WIRE.begin();
-  sd.begin(CS_PIN, SPI_HALF_SPEED);
+  sd.begin(4, SPI_HALF_SPEED);
 
-  _logger.writeToSerial("Debug", Serial);
-  _logger.writeToSdCard("Error", sd);
+  logger.writeToSerial("Debug", Serial);
+  logger.writeToSdCard("Error", sd);
+
+  //rtc.refresh();
+  logger.logInfo("Start system");
 }
 
 void loop() {
-  rtc.refresh();
-  _logger.logInfo("ping");
+  //rtc.refresh();
+  logger.logInfo("ping");
   delay(1000);
 }

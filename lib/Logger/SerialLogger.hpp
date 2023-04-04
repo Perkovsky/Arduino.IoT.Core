@@ -1,6 +1,5 @@
 #pragma once
 
-#include <String.h>
 #include <Arduino.h>
 #include "BaseLogger.hpp"
 
@@ -9,8 +8,8 @@ private:
     Stream& _stream;
 
 public:
-    SerialLogger(const LogLevel logLevel, Stream& stream, uRTCLib* rtc = nullptr)
-        : BaseLogger(logLevel, rtc), _stream(stream) {}
+    SerialLogger(const LogLevel logLevel, Stream& stream, AbstractDateTimeProvider& dateTimeProvider)
+        : BaseLogger(logLevel, dateTimeProvider), _stream(stream) {}
 
 protected:
     bool log(const String& message) override {
