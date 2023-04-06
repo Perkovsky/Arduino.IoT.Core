@@ -42,7 +42,14 @@ void setup() {
     wifiManager->checkConnection();
 }
 
+void restart() {
+    logger->logInfo("Restarting in 10 seconds");
+    delay(10000);
+    ESP.restart();
+}
+
 void loop() {
     logger->logInfo("ping");
     delay(1000);
+    //restart();
 }
