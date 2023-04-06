@@ -7,36 +7,32 @@
 #include "LoggerFactory.hpp"
 #include "SettingsAccessor.hpp"
 
-SdFat sd;
-WiFiManager* wifiManager;
-TelegramNotifier* notifier;
-
 DefaultDateTimeProvider dateTimeProvider;
+SdFat sd;
+TelegramNotifier* notifier;
 LoggerFactory* logger;
+WiFiManager* wifiManager;
+
 
 void setup() {
     Serial.begin(9600);
     URTCLIB_WIRE.begin();
     sd.begin(4, SPI_HALF_SPEED);
 
-
-    // SettingsAccessor settingsAccessor(logger, sd);
-    // Settings settings = settingsAccessor.getSettings();
-    // logger.logInfo(settings.logLevel);
-    // logger.logInfo(settings.wifi.ssid);
-
-    String ssid = F("Verizon_4CGXRN");
-    String password = F("famous9-fox-apt");
-    String botId = "6260968708:AAFmiglC7q1HcLDWG1VGG8L6LAyc_brEVBE";
-    String chatId = "-1001848360474";
-
+    // settings
+    SettingsAccessor settingsAccessor(sd);
+    Settings settings = settingsAccessor.getSettings();
     
-    notifier = new TelegramNotifier(botId, chatId);
+    // notifier
+    notifier = new TelegramNotifier(settings.telegram.botId, settings.telegram.chatId);
+    
+    // logger
     logger = new LoggerFactory(dateTimeProvider, notifier);
-    logger->writeToSerial("Debug", Serial);
-    //logger->writeToSdCard("Error", sd);
+    logger->writeToSerial(settings.logLevel.serial, Serial);
+    logger->writeToSdCard(settings.logLevel.sd, sd);
 
-    wifiManager = new WiFiManager(ssid, password, *logger);
+    // WiFi
+    wifiManager = new WiFiManager(settings.wifi.ssid, settings.wifi.password, *logger);
     wifiManager->connect();
     delay(1000);
     wifiManager->checkConnection();

@@ -2,6 +2,11 @@
 
 #include <String.h>
 
+struct LogLevelettings {
+    String serial;
+    String sd;
+};
+
 struct WiFiSettings {
     String ssid;
     String password;
@@ -17,7 +22,7 @@ struct TelegramSettings {
 };
 
 struct Settings {
-    String logLevel;
+    LogLevelettings logLevel;
     WiFiSettings wifi;
     EthernetSettings ethernet;
     TelegramSettings telegram;
