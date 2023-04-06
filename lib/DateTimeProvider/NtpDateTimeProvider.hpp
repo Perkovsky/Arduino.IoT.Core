@@ -1,3 +1,14 @@
+
+
+
+//////////////////////////////////////////////////////////////
+//                                                          //
+//     Doesn't work correctly. Refactoring is required.     //    
+//                                                          //
+//////////////////////////////////////////////////////////////
+
+
+
 #pragma once
 
 #include <Arduino.h>
@@ -7,10 +18,6 @@
 
 class NtpDateTimeProvider final : public AbstractDateTimeProvider {
 private:
-    const char* ntpServer = "pool.ntp.org";
-    const long gmtOffset = 0; // in seconds
-    const int daylightOffset = -14400; //GMT-04:00 in seconds
-
     tm getTimeInfo() {
         struct tm timeInfo;
         getLocalTime(&timeInfo);
@@ -19,7 +26,8 @@ private:
 
 public:
     NtpDateTimeProvider() {
-        configTime(gmtOffset, daylightOffset, ntpServer);
+        // -14400 => GMT-04:00 in seconds
+        configTime(0, -14400, "pool.ntp.org", "time.nist.gov");
     }
 
     String getTimestamp() override {

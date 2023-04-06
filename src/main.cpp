@@ -3,17 +3,14 @@
 #include <uRTCLib.h>
 #include "WiFiManager.hpp"
 #include "TelegramNotifier.hpp"
-#include "NtpDateTimeProvider.hpp"
+#include "DefaultDateTimeProvider.hpp"
 #include "LoggerFactory.hpp"
 #include "SettingsAccessor.hpp"
-
-#include "DefaultDateTimeProvider.hpp"
 
 SdFat sd;
 WiFiManager* wifiManager;
 TelegramNotifier* notifier;
 
-//NtpDateTimeProvider dateTimeProvider;
 DefaultDateTimeProvider dateTimeProvider;
 LoggerFactory* logger;
 
@@ -37,17 +34,12 @@ void setup() {
     notifier = new TelegramNotifier(botId, chatId);
     logger = new LoggerFactory(dateTimeProvider, notifier);
     logger->writeToSerial("Debug", Serial);
-    logger->writeToSdCard("Error", sd);
+    //logger->writeToSdCard("Error", sd);
 
     wifiManager = new WiFiManager(ssid, password, *logger);
     wifiManager->connect();
     delay(1000);
     wifiManager->checkConnection();
-    
-
-    logger->logInfo("Test info");
-    logger->logWarning("Test warning");
-    logger->logError("Test error");
 }
 
 void loop() {
