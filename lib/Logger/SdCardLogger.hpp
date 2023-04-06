@@ -9,8 +9,8 @@ private:
     SdFat& _sd;
 
 public:
-    SdCardLogger(const LogLevel logLevel, SdFat& sd, AbstractDateTimeProvider& dateTimeProvider)
-        : BaseLogger(logLevel, dateTimeProvider), _sd(sd) {}
+    SdCardLogger(const LogLevel logLevel, SdFat& sd, AbstractDateTimeProvider& dateTimeProvider, TelegramNotifier* notifier)
+        : BaseLogger(logLevel, dateTimeProvider, notifier), _sd(sd) {}
 
 protected:
     bool log(const String& message) override {

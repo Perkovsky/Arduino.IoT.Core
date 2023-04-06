@@ -8,6 +8,7 @@
 class LoggerFactory {
 private:
     AbstractDateTimeProvider& _dateTimeProvider;
+    TelegramNotifier* _notifier;
     BaseLogger* _loggers[2];
     unsigned char _count = 0;
 
@@ -25,14 +26,15 @@ private:
     }
 
 public:
-    LoggerFactory(AbstractDateTimeProvider& dateTimeProvider): _dateTimeProvider(dateTimeProvider) {}
+    LoggerFactory(AbstractDateTimeProvider& dateTimeProvider, TelegramNotifier* notifier)
+        : _dateTimeProvider(dateTimeProvider), _notifier(notifier) {}
 
     void writeToSerial(const String& logLevel, Stream& stream) {
-        _loggers[_count++] = new SerialLogger(toLogLevel(logLevel), stream, _dateTimeProvider);
+        _loggers[_count++] = new SerialLogger(toLogLevel(logLevel), stream, _dateTimeProvider, _notifier);
     }
 
     void writeToSdCard(const String& logLevel, SdFat& sd) {
-        _loggers[_count++] = new SdCardLogger(toLogLevel(logLevel), sd, _dateTimeProvider);
+        _loggers[_count++] = new SdCardLogger(toLogLevel(logLevel), sd, _dateTimeProvider, _notifier);
     }
 
     void logDebug(const String& message) const {
@@ -53,10 +55,10 @@ public:
         }
     }
 
-    void logError(const String& message) const {
+    void logError(const String& message) {
         for (int i = 0; i < _count; i++) {
             _loggers[i]->logError(message);
-            // _notifier.Send(message);
         }
+        _notifier->notify(message);
     }
 };

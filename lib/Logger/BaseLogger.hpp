@@ -4,11 +4,13 @@
 #include <uRTCLib.h>
 #include "LogLevel.hpp"
 #include "AbstractDateTimeProvider.hpp"
+#include "TelegramNotifier.hpp"
 
 class BaseLogger {
 private:
     const LogLevel _logLevel;
     AbstractDateTimeProvider& _dateTimeProvider;
+    TelegramNotifier* _notifier;
 
     static String toString(const LogLevel& logLevel) {
         switch (logLevel) {
@@ -46,13 +48,15 @@ private:
         
         if  (!log(logMessage))
         {
-            // _notifier.Send("Cannot log message: '" + message + "'");
+            String notifyMessage("Cannot log message: ");
+            notifyMessage += message;
+            _notifier->notify(notifyMessage);
         }
     }
 
 protected:
-    explicit BaseLogger(const LogLevel logLevel, AbstractDateTimeProvider& dateTimeProvider)
-        : _logLevel(logLevel), _dateTimeProvider(dateTimeProvider) {}
+    explicit BaseLogger(const LogLevel logLevel, AbstractDateTimeProvider& dateTimeProvider, TelegramNotifier* notifier)
+        : _logLevel(logLevel), _dateTimeProvider(dateTimeProvider), _notifier(notifier) {}
 
     virtual ~BaseLogger() = default;
 
