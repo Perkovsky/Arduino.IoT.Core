@@ -3,21 +3,22 @@
 #include <uRTCLib.h>
 #include "WiFiManager.hpp"
 #include "TelegramNotifier.hpp"
-#include "DefaultDateTimeProvider.hpp"
+#include "RtcDateTimeProvider.hpp"
 #include "LoggerFactory.hpp"
 #include "SettingsAccessor.hpp"
 
-DefaultDateTimeProvider dateTimeProvider;
+uRTCLib rtc(0x68);
+RtcDateTimeProvider dateTimeProvider(rtc);
 SdFat sd;
 TelegramNotifier* notifier;
 LoggerFactory* logger;
 WiFiManager* wifiManager;
 
-
 void setup() {
     Serial.begin(9600);
-    URTCLIB_WIRE.begin();
     sd.begin(4, SPI_HALF_SPEED);
+    URTCLIB_WIRE.begin();
+    rtc.refresh();
 
     // settings
     SettingsAccessor settingsAccessor(sd);
@@ -45,6 +46,7 @@ void restart() {
 }
 
 void loop() {
+    rtc.refresh();
     logger->logInfo("ping");
     delay(1000);
     //restart();
