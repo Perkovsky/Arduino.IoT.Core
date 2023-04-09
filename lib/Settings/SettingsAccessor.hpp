@@ -43,13 +43,20 @@ public:
             return settings;
         }
 
+        const char* macAddress = doc["ethernet"]["mac"];
+        if (strlen(macAddress) > 0) {
+            byte mac[6];
+            sscanf(macAddress, "%x:%x:%x:%x:%x:%x", &mac[0], &mac[1], &mac[2], &mac[3], &mac[4], &mac[5]);
+            memcpy(settings.ethernet.mac, mac, sizeof(mac));
+        }
+
         settings.logLevel.serial = doc["logLevel"]["serial"].as<String>();
         settings.logLevel.sd = doc["logLevel"]["sd"].as<String>();
         settings.wifi.ssid = doc["wifi"]["ssid"].as<String>();
         settings.wifi.password = doc["wifi"]["password"].as<String>();
-        settings.ethernet.mac = doc["ethernet"]["mac"].as<String>();
         settings.telegram.botId = doc["telegram"]["botId"].as<String>();
         settings.telegram.chatId = doc["telegram"]["chatId"].as<String>();
+        settings.tcpServerPort = doc["tcpServerPort"].as<uint16_t>();
 
         file.close();
         doc.clear();

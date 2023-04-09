@@ -13,7 +13,7 @@ public:
         : _botId(botId), _chatId(chatId) {}
 
     void notify(const String& message) {
-         HTTPClient httpClient;
+        HTTPClient httpClient;
 
         String url("https://api.telegram.org/bot");
         url += _botId;

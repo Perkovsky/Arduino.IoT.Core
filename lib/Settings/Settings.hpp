@@ -13,7 +13,7 @@ struct WiFiSettings {
 };
 
 struct EthernetSettings {
-    String mac;
+    byte mac[6];
 };
 
 struct TelegramSettings {
@@ -26,4 +26,5 @@ struct Settings {
     WiFiSettings wifi;
     EthernetSettings ethernet;
     TelegramSettings telegram;
+    uint16_t tcpServerPort;
 };
