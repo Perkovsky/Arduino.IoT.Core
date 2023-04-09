@@ -11,8 +11,6 @@ private:
     LoggerFactory& _logger;
 
 public:
-    WiFiClass client = WiFi;
-
     WiFiManager(const String& ssid, const String& password, LoggerFactory& logger)
         : _ssid(ssid.c_str()), _password(password.c_str()), _logger(logger) {}
 
@@ -29,13 +27,23 @@ public:
 
         digitalWrite(LED_BUILTIN, HIGH);
         _logger.logInfo("WiFi has been connected");
+        
+        // log IP
+        String info("Local IP Address: ");
+        info += WiFi.localIP().toString();
+        _logger.logInfo(info);
+
+        // log host name
+        info = "Local Host Name: ";
+        info += WiFi.getHostname();
+        _logger.logInfo(info);
     }
 
     void checkConnection() {
         IPAddress ip;
         if (WiFi.hostByName("google.com", ip)) {
             String result("Ping google.com successful. IP address: ");
-            result += ip;
+            result += ip.toString();
             _logger.logInfo(result);
         } else {
             _logger.logWarning("Ping google.com failed");
