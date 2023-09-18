@@ -6,8 +6,6 @@
 #include "RtcDateTimeProvider.hpp"
 #include "LoggerFactory.hpp"
 #include "SettingsAccessor.hpp"
-#include "TcpServer.hpp"
-#include "DefaultTcpCommandProcessor.hpp"
 
 uRTCLib rtc(0x68);
 RtcDateTimeProvider dateTimeProvider(rtc);
@@ -15,8 +13,6 @@ SdFat sd;
 TelegramNotifier* notifier;
 LoggerFactory* logger;
 WiFiManager* wifiManager;
-TcpServer* tcpServer; 
-AbstractTcpCommandProcessor* tcpCommandProcessor = new DefaultTcpCommandProcessor();
 
 void setup() {
     Serial.begin(9600);
@@ -41,10 +37,6 @@ void setup() {
     wifiManager->connect();
     delay(1000);
     wifiManager->checkConnection();
-
-    // TCP Server
-    tcpServer = new TcpServer(*tcpCommandProcessor, *logger);
-    tcpServer->bebin(settings.tcpServerPort);
 }
 
 void restart() {
