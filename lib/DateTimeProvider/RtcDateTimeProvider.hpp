@@ -12,7 +12,7 @@ public:
 
     String getTimestamp() override {
         char timestamp[20];
-        sprintf(timestamp, "20%02d-%02d-%02d %02d:%02d:%02d", _rtc.year(), _rtc.month(), _rtc.day(), _rtc.hour(), _rtc.minute(), _rtc.second());
+        sprintf(timestamp, "20%02d-%02d-%02dT%02d:%02d:%02d", _rtc.year(), _rtc.month(), _rtc.day(), _rtc.hour(), _rtc.minute(), _rtc.second());
         return String(timestamp);
     }
 };

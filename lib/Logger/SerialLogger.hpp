@@ -12,8 +12,8 @@ public:
         : BaseLogger(logLevel, dateTimeProvider, notifier), _stream(stream) {}
 
 protected:
-    bool log(const String& message) override {
-        _stream.println(message);
+    bool log(const String& logLevel, const String& timestamp, const String& message) override {
+        _stream.println(buildLogMessage(logLevel, timestamp, message));
         return true;
     }
 };

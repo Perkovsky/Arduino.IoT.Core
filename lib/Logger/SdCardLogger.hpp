@@ -13,13 +13,13 @@ public:
         : BaseLogger(logLevel, dateTimeProvider, notifier), _sd(sd) {}
 
 protected:
-    bool log(const String& message) override {
+    bool log(const String& logLevel, const String& timestamp, const String& message) override {
         File file = _sd.open(FIlE_NAME, FILE_WRITE);
         
         if (!file)
             return false;
 
-        file.println(message);
+        file.println(buildLogMessage(logLevel, timestamp, message));
         file.close();
         
         return true;

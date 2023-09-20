@@ -4,6 +4,7 @@
 #include "AbstractDateTimeProvider.hpp"
 #include "SerialLogger.hpp"
 #include "SdCardLogger.hpp"
+#include "ElasticsearchLogger.hpp"
 
 class LoggerFactory {
 private:
@@ -35,6 +36,10 @@ public:
 
     void writeToSdCard(const String& logLevel, SdFat& sd) {
         _loggers[_count++] = new SdCardLogger(toLogLevel(logLevel), sd, _dateTimeProvider, _notifier);
+    }
+
+    void writeToElasticserach(const String& logLevel, String& url) {
+        _loggers[_count++] = new ElasticsearchLogger(toLogLevel(logLevel), url, _dateTimeProvider, _notifier);
     }
 
     void logDebug(const String& message) const {

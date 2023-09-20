@@ -25,28 +25,14 @@ private:
         }
     }
 
-    String buildLogMessage(const LogLevel& logLevel, const String& message) {
-        const auto timestamp = _dateTimeProvider.getTimestamp();
-        const auto strLogLevel = toString(logLevel);
-        
-        String result("[");
-        result.reserve(timestamp.length() + strLogLevel.length() + message.length() + 5);
-        result += timestamp;
-        result += " ";
-        result += strLogLevel;
-        result += "] ";
-        result += message;
-
-        return result;
-    }
-
     void log(const LogLevel& logLevel, const String& message) {
         if (logLevel < _logLevel)
             return;
 
-        const String logMessage = buildLogMessage(logLevel, message);
+        const auto strLogLevel = toString(logLevel);
+        const auto timestamp = _dateTimeProvider.getTimestamp();
         
-        if  (!log(logMessage))
+        if  (!log(strLogLevel, timestamp, message))
         {
             String notifyMessage("Cannot log message: ");
             notifyMessage.reserve(message.length() + 21);
@@ -61,7 +47,18 @@ protected:
 
     virtual ~BaseLogger() = default;
 
-    virtual bool log(const String& message) = 0;
+    virtual bool log(const String& logLevel, const String& timestamp, const String& message) = 0;
+
+    String buildLogMessage(const String& logLevel, const String& timestamp, const String& message) {
+        String result("[");
+        result.reserve(timestamp.length() + logLevel.length() + message.length() + 5);
+        result += timestamp;
+        result += " ";
+        result += logLevel;
+        result += "] ";
+        result += message;
+        return result;
+    }
 
 public:
     void logDebug(const String& message) {

@@ -31,6 +31,7 @@ void setup() {
     logger = new LoggerFactory(dateTimeProvider, notifier);
     logger->writeToSerial(settings.logLevel.serial, Serial);
     logger->writeToSdCard(settings.logLevel.sd, sd);
+    //logger->writeToElasticserach(settings.logLevel.elasticsearch, settings.elasticsearchUrl);
 
     // WiFi
     wifiManager = new WiFiManager(settings.wifi.ssid, settings.wifi.password, *logger);

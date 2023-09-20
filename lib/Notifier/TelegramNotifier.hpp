@@ -7,14 +7,16 @@ class TelegramNotifier {
 private:
     const String& _botId;
     const String& _chatId;
+    HTTPClient* _httpClient;
 
 public:
     TelegramNotifier(const String& botId, const String& chatId)
-        : _botId(botId), _chatId(chatId) {}
+        : _botId(botId), _chatId(chatId)
+    {
+        _httpClient = new HTTPClient();
+    }
 
     void notify(const String& message) {
-        HTTPClient httpClient;
-
         String url("https://api.telegram.org/bot");
         url.reserve(_botId.length() + _chatId.length() + message.length() + 56);
         url += _botId;
@@ -23,8 +25,8 @@ public:
         url += "&text=";
         url += message;
 
-        httpClient.begin(url.c_str());
-        int httpResponseCode = httpClient.GET();
-        httpClient.end();
+        _httpClient->begin(url.c_str());
+        int httpResponseCode = _httpClient->GET();
+        _httpClient->end();
     }
 };

@@ -5,6 +5,7 @@
 struct LogLevelettings {
     String serial;
     String sd;
+    String elasticsearch;
 };
 
 struct WiFiSettings {
@@ -26,5 +27,5 @@ struct Settings {
     WiFiSettings wifi;
     EthernetSettings ethernet;
     TelegramSettings telegram;
-    uint16_t tcpServerPort;
+    String elasticsearchUrl;
 };

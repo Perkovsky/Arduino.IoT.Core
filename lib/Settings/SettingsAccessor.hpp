@@ -31,7 +31,7 @@ public:
             return settings;
         }
 
-        StaticJsonDocument<512> doc;
+        StaticJsonDocument<768> doc;
         DeserializationError error = deserializeJson(doc, file);
         if (error) {
             Serial.print("Failed to parse ");
@@ -52,11 +52,12 @@ public:
 
         settings.logLevel.serial = doc["logLevel"]["serial"].as<String>();
         settings.logLevel.sd = doc["logLevel"]["sd"].as<String>();
+        settings.logLevel.elasticsearch = doc["logLevel"]["elasticsearch"].as<String>();
         settings.wifi.ssid = doc["wifi"]["ssid"].as<String>();
         settings.wifi.password = doc["wifi"]["password"].as<String>();
         settings.telegram.botId = doc["telegram"]["botId"].as<String>();
         settings.telegram.chatId = doc["telegram"]["chatId"].as<String>();
-        settings.tcpServerPort = doc["tcpServerPort"].as<uint16_t>();
+        settings.elasticsearchUrl = doc["elasticsearchUrl"].as<String>();
 
         file.close();
         doc.clear();
