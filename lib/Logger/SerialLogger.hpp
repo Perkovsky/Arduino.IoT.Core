@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include "ResponseLog.hpp"
 #include "BaseLogger.hpp"
 
 class SerialLogger final : public BaseLogger {
@@ -12,8 +13,8 @@ public:
         : BaseLogger(logLevel, dateTimeProvider, notifier), _stream(stream) {}
 
 protected:
-    bool log(const String& logLevel, const String& timestamp, const String& message) override {
+    ResponseLog log(const String& logLevel, const String& timestamp, const String& message) override {
         _stream.println(buildLogMessage(logLevel, timestamp, message));
-        return true;
+        return getSuccessfulResponseLog(F("SerialLogger"));
     }
 };

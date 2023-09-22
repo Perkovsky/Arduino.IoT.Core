@@ -30,8 +30,8 @@ void setup() {
     // logger
     logger = new LoggerFactory(dateTimeProvider, notifier);
     logger->writeToSerial(settings.logLevel.serial, Serial);
-    logger->writeToSdCard(settings.logLevel.sd, sd);
-    //logger->writeToElasticserach(settings.logLevel.elasticsearch, settings.elasticsearchUrl);
+    //logger->writeToSdCard(settings.logLevel.sd, sd);
+    logger->writeToElasticserach(settings.logLevel.elasticsearch, settings.elasticsearchUrl);
 
     // WiFi
     wifiManager = new WiFiManager(settings.wifi.ssid, settings.wifi.password, *logger);
@@ -49,6 +49,6 @@ void restart() {
 void loop() {
     rtc.refresh();
     logger->logInfo("ping");
-    delay(1000);
+    delay(10000);
     //restart();
 }

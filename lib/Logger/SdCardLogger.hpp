@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SdFat.h>
+#include "ResponseLog.hpp"
 #include "BaseLogger.hpp"
 
 class SdCardLogger final : public BaseLogger {
@@ -13,15 +14,17 @@ public:
         : BaseLogger(logLevel, dateTimeProvider, notifier), _sd(sd) {}
 
 protected:
-    bool log(const String& logLevel, const String& timestamp, const String& message) override {
+    ResponseLog log(const String& logLevel, const String& timestamp, const String& message) override {
         File file = _sd.open(FIlE_NAME, FILE_WRITE);
         
-        if (!file)
-            return false;
+        String loggerName = F("SdCardLogger");
+        if (!file) {
+            return getFailedResponseLog(loggerName);
+        }
 
         file.println(buildLogMessage(logLevel, timestamp, message));
         file.close();
         
-        return true;
+        return getSuccessfulResponseLog(loggerName);
     }
 };

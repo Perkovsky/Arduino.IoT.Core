@@ -57,7 +57,7 @@ public:
     }
 
 protected:
-    bool log(const String& logLevel, const String& timestamp, const String& message) override {
+    ResponseLog log(const String& logLevel, const String& timestamp, const String& message) override {
         createIndex();
         
         String url = getUrl("/_doc");
@@ -74,13 +74,14 @@ protected:
         jsonPayload += "\"}";
 
         int httpCode = _httpClient->POST(jsonPayload);
-        //String response = _httpClient->getString(); // success or error message
+        String response = _httpClient->getString(); // successful or failed message
         _httpClient->end();
         
+        String loggerName = F("ElasticsearchLogger");
         if (httpCode == HTTP_CODE_CREATED) {
-           return true;
+           return getSuccessfulResponseLog(loggerName, response);
         }
         
-        return false;
+        return getFailedResponseLog(loggerName, response);
     }
 };
