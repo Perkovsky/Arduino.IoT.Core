@@ -1,3 +1,10 @@
+///////////////////////////////////////////
+//                                       //
+// User only with Real DateTime Provider //
+//                                       //
+///////////////////////////////////////////
+
+
 #pragma once
 
 #include <Arduino.h>
@@ -7,7 +14,7 @@
 
 class ElasticsearchLogger final : public BaseLogger {
 private:
-    const String& _baseUrl;
+    const String _baseUrl;
     HTTPClient& _httpClient;
 
     String getUrl(const String& uri = String()) {

@@ -49,7 +49,7 @@ void restart() {
 }
 
 void loop() {
-    //rtc.refresh();
+    rtc.refresh();
     logger->logInfo("ping");
     delay(1000);
     //restart();
