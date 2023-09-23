@@ -8,7 +8,7 @@
 class ElasticsearchLogger final : public BaseLogger {
 private:
     const String& _baseUrl;
-    HTTPClient* _httpClient;
+    HTTPClient& _httpClient;
 
     String getUrl(const String& uri = String()) {
         String indexName = "log";
@@ -22,9 +22,9 @@ private:
 
     bool DoesIndexExist() {
         String url = getUrl();
-        _httpClient->begin(url);
-        int httpCode = _httpClient->GET();
-        _httpClient->end();
+        _httpClient.begin(url);
+        int httpCode = _httpClient.GET();
+        _httpClient.end();
         return httpCode == HTTP_CODE_OK;
     }
 
@@ -34,8 +34,8 @@ private:
         }
 
         String url = getUrl();
-        _httpClient->begin(url);
-        _httpClient->addHeader("Content-Type", "application/json");
+        _httpClient.begin(url);
+        _httpClient.addHeader("Content-Type", "application/json");
 
         // Define the index mapping
         String indexMapping = F("{\"mappings\": {"
@@ -45,24 +45,21 @@ private:
                               "\"message\": {\"type\": \"text\"}"
                               "}}}");
 
-        int createIndexCode = _httpClient->PUT(indexMapping);
-        _httpClient->end();
+        int createIndexCode = _httpClient.PUT(indexMapping);
+        _httpClient.end();
     }
 
 public:
-    ElasticsearchLogger(const LogLevel logLevel, String& url, AbstractDateTimeProvider& dateTimeProvider, TelegramNotifier* notifier)
-        : BaseLogger(logLevel, dateTimeProvider, notifier), _baseUrl(url)
-    {
-        _httpClient = new HTTPClient();
-    }
+    ElasticsearchLogger(const LogLevel logLevel, const String& url, AbstractDateTimeProvider& dateTimeProvider, TelegramNotifier& notifier, HTTPClient& httpClient)
+        : BaseLogger(logLevel, dateTimeProvider, notifier), _baseUrl(url), _httpClient(httpClient) {}
 
 protected:
     ResponseLog log(const String& logLevel, const String& timestamp, const String& message) override {
         createIndex();
         
         String url = getUrl("/_doc");
-        _httpClient->begin(url);
-        _httpClient->addHeader("Content-Type", "application/json");
+        _httpClient.begin(url);
+        _httpClient.addHeader("Content-Type", "application/json");
 
         String jsonPayload("{\"timestamp\":\"");
         jsonPayload.reserve(timestamp.length() + logLevel.length() + message.length() + 53);
@@ -73,9 +70,9 @@ protected:
         jsonPayload += message;
         jsonPayload += "\"}";
 
-        int httpCode = _httpClient->POST(jsonPayload);
-        String response = _httpClient->getString(); // successful or failed message
-        _httpClient->end();
+        int httpCode = _httpClient.POST(jsonPayload);
+        String response = _httpClient.getString(); // successful or failed message
+        _httpClient.end();
         
         String loggerName = F("ElasticsearchLogger");
         if (httpCode == HTTP_CODE_CREATED) {

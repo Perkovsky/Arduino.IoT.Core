@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <SdFat.h>
 #include <uRTCLib.h>
+#include <HTTPClient.h>
 #include "WiFiManager.hpp"
 #include "TelegramNotifier.hpp"
 #include "RtcDateTimeProvider.hpp"
@@ -10,6 +11,7 @@
 uRTCLib rtc(0x68);
 RtcDateTimeProvider dateTimeProvider(rtc);
 SdFat sd;
+HTTPClient httpClient;
 TelegramNotifier* notifier;
 LoggerFactory* logger;
 WiFiManager* wifiManager;
@@ -25,12 +27,12 @@ void setup() {
     Settings settings = settingsAccessor.getSettings();
     
     // notifier
-    notifier = new TelegramNotifier(settings.telegram.botId, settings.telegram.chatId);
+    notifier = new TelegramNotifier(settings.telegram.botId, settings.telegram.chatId, httpClient);
     
     // logger
-    logger = new LoggerFactory(dateTimeProvider, notifier);
+    logger = new LoggerFactory(dateTimeProvider, *notifier, httpClient);
     logger->writeToSerial(settings.logLevel.serial, Serial);
-    //logger->writeToSdCard(settings.logLevel.sd, sd);
+    logger->writeToSdCard(settings.logLevel.sd, sd);
     logger->writeToElasticserach(settings.logLevel.elasticsearch, settings.elasticsearchUrl);
 
     // WiFi
@@ -47,8 +49,8 @@ void restart() {
 }
 
 void loop() {
-    rtc.refresh();
+    //rtc.refresh();
     logger->logInfo("ping");
-    delay(10000);
+    delay(1000);
     //restart();
 }

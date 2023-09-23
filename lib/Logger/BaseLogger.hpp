@@ -11,7 +11,7 @@ class BaseLogger {
 private:
     const LogLevel _logLevel;
     AbstractDateTimeProvider& _dateTimeProvider;
-    TelegramNotifier* _notifier;
+    TelegramNotifier& _notifier;
 
     static String toString(const LogLevel& logLevel) {
         switch (logLevel) {
@@ -42,7 +42,7 @@ private:
             notifyMessage += responseLog.message;
             notifyMessage += ". Cannot log message: ";
             notifyMessage += message;
-            _notifier->notify(notifyMessage);
+            _notifier.notify(notifyMessage);
         }
     }
 
@@ -55,7 +55,7 @@ private:
     }
 
 protected:
-    explicit BaseLogger(const LogLevel logLevel, AbstractDateTimeProvider& dateTimeProvider, TelegramNotifier* notifier)
+    explicit BaseLogger(const LogLevel logLevel, AbstractDateTimeProvider& dateTimeProvider, TelegramNotifier& notifier)
         : _logLevel(logLevel), _dateTimeProvider(dateTimeProvider), _notifier(notifier) {}
 
     virtual ~BaseLogger() = default;

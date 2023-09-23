@@ -9,7 +9,7 @@ private:
     Stream& _stream;
 
 public:
-    SerialLogger(const LogLevel logLevel, Stream& stream, AbstractDateTimeProvider& dateTimeProvider, TelegramNotifier* notifier)
+    SerialLogger(const LogLevel logLevel, Stream& stream, AbstractDateTimeProvider& dateTimeProvider, TelegramNotifier& notifier)
         : BaseLogger(logLevel, dateTimeProvider, notifier), _stream(stream) {}
 
 protected:

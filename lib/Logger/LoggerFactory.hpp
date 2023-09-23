@@ -9,8 +9,9 @@
 class LoggerFactory {
 private:
     AbstractDateTimeProvider& _dateTimeProvider;
-    TelegramNotifier* _notifier;
-    BaseLogger* _loggers[2];
+    TelegramNotifier& _notifier;
+    HTTPClient& _httpClient;
+    BaseLogger* _loggers[3];
     unsigned char _count = 0;
 
     static LogLevel toLogLevel(const String& logLevel) {
@@ -27,8 +28,8 @@ private:
     }
 
 public:
-    LoggerFactory(AbstractDateTimeProvider& dateTimeProvider, TelegramNotifier* notifier)
-        : _dateTimeProvider(dateTimeProvider), _notifier(notifier) {}
+    LoggerFactory(AbstractDateTimeProvider& dateTimeProvider, TelegramNotifier& notifier, HTTPClient& httpClient)
+        : _dateTimeProvider(dateTimeProvider), _notifier(notifier), _httpClient(httpClient) {}
 
     void writeToSerial(const String& logLevel, Stream& stream) {
         _loggers[_count++] = new SerialLogger(toLogLevel(logLevel), stream, _dateTimeProvider, _notifier);
@@ -38,8 +39,8 @@ public:
         _loggers[_count++] = new SdCardLogger(toLogLevel(logLevel), sd, _dateTimeProvider, _notifier);
     }
 
-    void writeToElasticserach(const String& logLevel, String& url) {
-        _loggers[_count++] = new ElasticsearchLogger(toLogLevel(logLevel), url, _dateTimeProvider, _notifier);
+    void writeToElasticserach(const String& logLevel, const String& url) {
+        _loggers[_count++] = new ElasticsearchLogger(toLogLevel(logLevel), url, _dateTimeProvider, _notifier, _httpClient);
     }
 
     void logDebug(const String& message) const {
@@ -64,6 +65,6 @@ public:
         for (int i = 0; i < _count; i++) {
             _loggers[i]->logError(message);
         }
-        _notifier->notify(message);
+        _notifier.notify(message);
     }
 };
